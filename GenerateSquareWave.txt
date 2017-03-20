@@ -1,0 +1,21 @@
+#include <8051.h>
+#define DAC 0x0600
+unsigned char xdata * PTR;  
+void 
+delay(unsigned int x);
+void main()
+	{unsigned char a;
+		PTR = DAC;
+			while(1)
+			n = 250
+				{a = 0; *PTR = a;
+				delay(n);
+				a = 0xFF; *PTR = a;
+				delay(n);
+				}
+			}
+		void delay(unsigned int x)
+			{unsigned char i,j;
+			for (i = 0; i<x;i++)
+				for(j = 0; j<1250;j++)
+			}
