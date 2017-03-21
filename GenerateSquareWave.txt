@@ -7,7 +7,7 @@ void main()
 	{unsigned char a;
 		PTR = DAC;
 			while(1)
-			n = 500
+			n = 1000
 				{a = 0; *PTR = a;
 				delay(n);
 				a = 0xFF; *PTR = a;
