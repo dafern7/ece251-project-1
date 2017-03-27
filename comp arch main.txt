@@ -1,0 +1,114 @@
+//EFM8BB3 Comp Arch First Project
+//
+
+//-----------------------------------------------------------------------------
+// Include Files
+//-----------------------------------------------------------------------------
+#include <SI_EFM8BB3_Register_Enums.h>
+#include "InitDevice.h"
+
+
+
+//-----------------------------------------------------------------------------
+// Pin Definitions
+//-----------------------------------------------------------------------------
+
+
+
+SI_SBIT(S1, SFR_P0, 0);  // clock pin
+SI_SBIT(S2, SFR_P0, 1);  // opcode 1
+SI_SBIT(S3, SFR_P0, 2);  // opcode 2
+SI_SBIT(S4, SFR_P0, 3);  // data 1 (MSB)
+SI_SBIT(S5, SFR_P0, 4);  // data 2
+SI_SBIT(S6, SFR_P0, 5);  // data 3
+SI_SBIT(S7, SFR_P0, 6);  // data 4 (LSB)
+
+void delay(void){
+	for (i = 0 ; i < 2500; i++)
+	}
+
+void clockPulse(void)
+{
+	S1 = 1;
+	delay();
+	S1 = 0;
+	delay();
+	S1 = 1;
+}
+//-----------------------------------------------------------------------------
+// Main Routine
+//-----------------------------------------------------------------------------
+void main (void) //add 0001 continuously until 0111 (opcode for adder is 01, capable of "AND" and "OR" operations as well)//test
+{
+   
+   (S2 = 0);
+   (S3 = 1);
+   (S4 = 0);
+   (S5 = 0);
+   (S6 = 0);
+   (S7 = 1);
+   clockPulse(); // ACCUM 0001
+
+   (S2 = 0);
+   (S3 = 1);
+   (S4 = 0);
+   (S5 = 0);
+   (S6 = 0);
+   (S7 = 1);
+   clockPulse(); // ACCUM 0010
+
+   (S2 = 0);
+   (S3 = 1);
+   (S4 = 0);
+   (S5 = 0);
+   (S6 = 0);
+   (S7 = 1);
+   clockPulse(); // ACCUM 0011
+
+
+   (S2 = 0);
+   (S3 = 1);
+   (S4 = 0);
+   (S5 = 0);
+   (S6 = 0);
+   (S7 = 1);
+   clockPulse(); // ACCUM 0100
+
+   (S2 = 0);
+   (S3 = 1);
+   (S4 = 0);
+   (S5 = 0);
+   (S6 = 0);
+   (S7 = 1);
+   clockPulse(); // ACCUM 0101
+
+   (S2 = 0);
+   (S3 = 1);
+   (S4 = 0);
+   (S5 = 0);
+   (S6 = 0);
+   (S7 = 1);
+   clockPulse(); // ACCUM 0110
+
+   (S2 = 0);
+   (S3 = 1);
+   (S4 = 0);
+   (S5 = 0);
+   (S6 = 0);
+   (S7 = 1);
+   clockPulse(); // ACCUM 0111
+
+
+
+
+
+
+
+   IE_EA = 1;                          // Enable global interrupts
+
+
+
+
+
+
+}
