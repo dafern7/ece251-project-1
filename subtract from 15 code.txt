@@ -1,0 +1,278 @@
+//EFM8BB3 Comp Arch First Project
+//
+
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
+#include <SI_EFM8BB3_Register_Enums.h>
+#include <InitDevice.h>
+
+//-----------------------------------------------------------------------------
+// Pin Definitions
+//-----------------------------------------------------------------------------
+SI_SBIT (DISP_EN, SFR_P3, 4);          // Display Enable
+#define DISP_BC_DRIVEN                // 0 = Board Controller drives display
+#define DISP_EFM8_DRIVEN 			// 1 = EFM8 drives display
+
+
+SI_SBIT (S0, SFR_P2, 0); //clockpulse
+SI_SBIT (S1, SFR_P2, 1); //MSB data4
+SI_SBIT (S2, SFR_P2, 2); //data2
+SI_SBIT (S3, SFR_P2, 3); //data3
+SI_SBIT (S4, SFR_P2, 4); //LSB data4
+SI_SBIT (S5, SFR_P2, 5); //opcode1MSB
+SI_SBIT (S6, SFR_P2, 6); //opcode2LSB
+
+//-----------------------------------------------------------------------------
+// CLOCKPULSE
+//-----------------------------------------------------------------------------
+
+int x = 0;
+
+
+void main (void){
+
+	enter_DefaultMode_from_RESET();
+
+//this program subtracts 1 from 15 continuously until 0 (15=1111)
+
+        S0 = 1; //clock pulse up
+        S1 = 1;
+        S2 = 1;
+        S3 = 1;
+        S4 = 1;
+        S5 = 0;
+        S6 = 1; //add 1111
+        for(x; x<2500000000; x++){
+        }
+        x = 0;
+        S0 = 0; //clock pulse down (no action)
+
+        for(x; x<2500000000; x++){
+               }
+        x = 0;
+        S0 = 1; //clock pulse up
+        S1 = 1;
+        S2 = 1;
+        S3 = 1;
+        S4 = 1;
+        S5 = 0; //1110
+        S6 = 1;
+        for(x ; x<2500000000; x++){
+        }
+        x = 0;
+        S0 = 0;
+		
+		for(x; x<2500000000; x++){
+               }
+        x = 0;
+        S0 = 1; //clock pulse up
+        S1 = 1;
+        S2 = 1;
+        S3 = 1;
+        S4 = 1;
+        S5 = 0; //sub 1 (!3)
+        S6 = 1;
+        for(x ; x<2500000000; x++){
+        }
+        x = 0;
+        S0 = 0;
+		
+		for(x; x<2500000000; x++){
+               }
+        x = 0;
+        S0 = 1; //clock pulse up
+        S1 = 1;
+        S2 = 1;
+        S3 = 1;
+        S4 = 1;
+        S5 = 0; //sub 1 (12)
+        S6 = 1;
+        for(x ; x<2500000000; x++){
+        }
+        x = 0;
+        S0 = 0;
+		
+		for(x; x<2500000000; x++){
+               }
+        x = 0;
+        S0 = 1; //clock pulse up
+        S1 = 1;
+        S2 = 1;
+        S3 = 1;
+        S4 = 1;
+        S5 = 0; //sub 1 (11)
+        S6 = 1;
+        for(x ; x<2500000000; x++){
+        }
+        x = 0;
+        S0 = 0;
+		
+		for(x; x<2500000000; x++){
+               }
+        x = 0;
+        S0 = 1; //clock pulse up
+        S1 = 1;
+        S2 = 1;
+        S3 = 1;
+        S4 = 1;
+        S5 = 0; //sub 1 (10)
+        S6 = 1;
+        for(x ; x<2500000000; x++){
+        }
+        x = 0;
+        S0 = 0;
+		
+		for(x; x<2500000000; x++){
+               }
+        x = 0;
+        S0 = 1; //clock pulse up
+        S1 = 1;
+        S2 = 1;
+        S3 = 1;
+        S4 = 1;
+        S5 = 0; //sub 1 (9)
+        S6 = 1;
+        for(x ; x<2500000000; x++){
+        }
+        x = 0;
+        S0 = 0;
+		
+		for(x; x<2500000000; x++){
+               }
+        x = 0;
+        S0 = 1; //clock pulse up
+        S1 = 1;
+        S2 = 1;
+        S3 = 1;
+        S4 = 1;
+        S5 = 0; //sub 1 (8)
+        S6 = 1;
+        for(x ; x<2500000000; x++){
+        }
+        x = 0;
+        S0 = 0;
+		
+		for(x; x<2500000000; x++){
+               }
+        x = 0;
+        S0 = 1; //clock pulse up
+        S1 = 1;
+        S2 = 1;
+        S3 = 1;
+        S4 = 1;
+        S5 = 0; //sub 1 (7)
+        S6 = 1;
+        for(x ; x<2500000000; x++){
+        }
+        x = 0;
+        S0 = 0;
+		
+		for(x; x<2500000000; x++){
+               }
+        x = 0;
+        S0 = 1; //clock pulse up
+        S1 = 1;
+        S2 = 1;
+        S3 = 1;
+        S4 = 1;
+        S5 = 0; //sub 1 (6)
+        S6 = 1;
+        for(x ; x<2500000000; x++){
+        }
+        x = 0;
+        S0 = 0;
+		
+		for(x; x<2500000000; x++){
+               }
+        x = 0;
+        S0 = 1; //clock pulse up
+        S1 = 1;
+        S2 = 1;
+        S3 = 1;
+        S4 = 1;
+        S5 = 0; //sub 1 (5)
+        S6 = 1;
+        for(x ; x<2500000000; x++){
+        }
+        x = 0;
+        S0 = 0;
+		
+		for(x; x<2500000000; x++){
+               }
+        x = 0;
+        S0 = 1; //clock pulse up
+        S1 = 1;
+        S2 = 1;
+        S3 = 1;
+        S4 = 1;
+        S5 = 0; //sub 1 (4)
+        S6 = 1;
+        for(x ; x<2500000000; x++){
+        }
+        x = 0;
+        S0 = 0;
+		
+		for(x; x<2500000000; x++){
+               }
+        x = 0;
+        S0 = 1; //clock pulse up
+        S1 = 1;
+        S2 = 1;
+        S3 = 1;
+        S4 = 1;
+        S5 = 0; //sub 1 (3)
+        S6 = 1;
+        for(x ; x<2500000000; x++){
+        }
+        x = 0;
+        S0 = 0;
+		
+		for(x; x<2500000000; x++){
+               }
+        x = 0;
+        S0 = 1; //clock pulse up
+        S1 = 1;
+        S2 = 1;
+        S3 = 1;
+        S4 = 1;
+        S5 = 0; //sub 1 (2)
+        S6 = 1;
+        for(x ; x<2500000000; x++){
+        }
+        x = 0;
+        S0 = 0;
+		
+		for(x; x<2500000000; x++){
+               }
+        x = 0;
+        S0 = 1; //clock pulse up
+        S1 = 1;
+        S2 = 1;
+        S3 = 1;
+        S4 = 1;
+        S5 = 0; //sub 1 (1)
+        S6 = 1;
+        for(x ; x<2500000000; x++){
+        }
+        x = 0;
+        S0 = 0;
+		
+		for(x; x<2500000000; x++){
+               }
+        x = 0;
+        S0 = 1; //clock pulse up
+        S1 = 1;
+        S2 = 1;
+        S3 = 1;
+        S4 = 1;
+        S5 = 0; //sub 1 (0)
+        S6 = 1;
+        for(x ; x<2500000000; x++){
+        }
+        x = 0;
+        S0 = 0;
+
+        
+	while(1){}
+	}
