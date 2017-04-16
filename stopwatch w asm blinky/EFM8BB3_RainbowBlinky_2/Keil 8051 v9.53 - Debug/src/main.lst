@@ -1,0 +1,150 @@
+C51 COMPILER V9.53.0.0   MAIN                                                              04/14/2017 23:20:05 PAGE 1   
+
+
+C51 COMPILER V9.53.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\src\main.OBJ
+COMPILER INVOKED BY: c:\SiliconLabs\SimplicityStudio\v4\developer\toolchains\keil_8051\9.53\BIN\C51.exe C:\Users\Richard
+                    -\SimplicityStudio\v4_workspace\EFM8BB3_RainbowBlinky_2\src\main.c OMF2 SMALL DEBUG OBJECTEXTEND ROM(LARGE) WARNINGLEVEL(
+                    -2) FLOATFUZZY(3) OPTIMIZE(8,SPEED) DEFINE(DEBUG=1) INTVECTOR(0X0000) INTPROMOTE INCDIR(C:\Users\Richard\SimplicityStudio
+                    -\v4_workspace\EFM8BB3_RainbowBlinky_2\inc;C:\Users\Richard\SimplicityStudio\v4_workspace\EFM8BB3_RainbowBlinky_2\inc\con
+                    -fig;C:/SiliconLabs/SimplicityStudio/v4/developer/sdks/8051/v4.0.1//kits/common/drivers/efm8_memory_lcd/inc;C:/SiliconLab
+                    -s/SimplicityStudio/v4/developer/sdks/8051/v4.0.1//kits/common/drivers/efm8_memory_lcd/inc/graphics;C:/SiliconLabs/Simpli
+                    -cityStudio/v4/developer/sdks/8051/v4.0.1//kits/common/drivers/efm8_memory_lcd/inc/config;C:/SiliconLabs/SimplicityStudio
+                    -/v4/developer/sdks/8051/v4.0.1//kits/common/drivers/efm8_joystick;C:/SiliconLabs/SimplicityStudio/v4/developer/sdks/8051
+                    -/v4.0.1//kits/common/bsp;C:/SiliconLabs/SimplicityStudio/v4/developer/sdks/8051/v4.0.1//kits/EFM8BB3_SLSTK2022A/config;C
+                    -:/SiliconLabs/SimplicityStudio/v4/developer/sdks/8051/v4.0.1//kits/common/drivers/efm8_rgb_led;C:/SiliconLabs/Simplicity
+                    -Studio/v4/developer/sdks/8051/v4.0.1//Device/shared/si8051base;C:/SiliconLabs/SimplicityStudio/v4/developer/sdks/8051/v4
+                    -.0.1//Device/EFM8BB3/inc;C:/SiliconLabs/SimplicityStudio/v4/developer/sdks/8051/v4.0.1//Device/EFM8BB3/peripheral_driver
+                    -/inc) PRINT(.\src\main.lst) COND PAGEWIDTH(120) PAGELENGTH(65) OBJECT(.\src\main.OBJ)
+
+line level    source
+
+   1          #include "bsp.h"
+   2          #include "pwr.h"
+*** WARNING C318 IN LINE 2 OF C:\Users\Richard\SimplicityStudio\v4_workspace\EFM8BB3_RainbowBlinky_2\src\main.c: can't o
+             -pen file 'pwr.h'
+   3          #include <stdio.h>
+   4          #include <stdlib.h>
+   5          #include "draw.h"
+   6          #include "tick.h"
+   7          #include "InitDevice.h"
+   8          #include <SI_EFM8BB3_Register_Enums.h>
+   9          #include "spi.h"
+  10          SI_SBIT (LED1, SFR_P1, 3);
+  11          int x = 0;
+  12          int goWrite=0;
+  13          int screenLocation=10;
+  14          int lapIt=0;
+  15          char text[10];
+  16          int debounceCount=0;
+  17          //SI_SFR(ourSF ,SFRPAGE);
+  18          SI_INTERRUPT (TIMER0_ISR, TIMER0_IRQn)
+  19          {
+  20   1              goWrite=1;
+  21   1              LED1 = !LED1;
+  22   1              TCON_TR0 = 0;                       // Stop Timer 0
+  23   1              TH0 = 00111000;           // Reset Timer0 High register
+  24   1          TL0 = 10011110;            // Reset Timer0 Low register
+  25   1          TCON_TR0 = 1;
+  26   1              x = x + 100;
+  27   1      }
+  28          
+  29          SI_INTERRUPT (PMATCH_ISR, PMATCH_IRQn)
+  30          {
+  31   1         if(P0_B2 == 0 && lapIt==0)
+  32   1         {
+  33   2                 //make this the lap
+  34   2                 lapIt=1;
+  35   2                 //Wait(.001);
+  36   2         }
+  37   1         if(P0_B3 == 0)
+  38   1         {
+  39   2                //make this the clear
+  40   2                 x = 0;
+  41   2         }
+  42   1      
+C51 COMPILER V9.53.0.0   MAIN                                                              04/14/2017 23:20:05 PAGE 2   
+
+  43   1                             // Disable Port Match interrupts to
+  44   1                                                                                 // prevent multiple interrupts from
+  45   1                                                                                 // occurring while the switches are
+  46   1                                                                                 // pressed
+  47   1      
+  48   1      }
+  49          
+  50          void main(void)
+  51          {
+  52   1        // Initialize the device
+  53   1        enter_DefaultMode_from_RESET();
+  54   1        //SFRPAGE=PG2_PAGE;
+  55   1        // Safety trap. Press either push button while resetting the device to
+  56   1        // stall the application here.
+  57   1      
+  58   1        IE_EA = 1;
+  59   1      
+  60   1        EIP1H = 0|1|0|0|0|0|0|0;
+  61   1        //set portmatch priority to high...
+  62   1      
+  63   1        DISP_Init();
+  64   1        DrawScreenText("HowDoesthisWork", 0);
+  65   1        //DrawScreenText("Pens MAN", 10);
+  66   1        // Mainloop
+  67   1        //writeALot("hey");
+  68   1        while (true)
+  69   1        {
+  70   2              if (lapIt){
+  71   3                      //Wait(.01);
+  72   3                      SFRPAGE = 0x00;              // EIE1 on SFRPAGE 0x00
+  73   3                      EIE1 &= ~0x02;
+  74   3                      screenLocation +=10;
+  75   3                      text[0]='\0';
+  76   3                      sprintf(text,"%d",x);
+  77   3                      DrawScreenText(text, screenLocation);
+  78   3                      lapIt=0;
+  79   3                      IE_EA=1;
+  80   3                      //SFRPAGE=PG2_PAGE;
+  81   3                      //SFRPAGE=LEGACY_PAGE;
+  82   3      
+  83   3      
+  84   3              }
+  85   2              if (goWrite){
+  86   3                      text[0]='\0';
+  87   3                      sprintf(text,"%d",x);
+  88   3                      DrawScreenText(text, 10);
+  89   3                      goWrite=0;
+  90   3                      if (debounceCount == 3){
+  91   4                              EIE1 |=0x02;
+  92   4                              debounceCount = 0;
+  93   4                      }
+  94   3                      debounceCount++;
+  95   3              }
+  96   2      
+  97   2              //x+=10;
+  98   2          // Halt the display tick and wait for display updates to finish
+  99   2          TMR3CN0 &= ~TMR3CN0_TR3__BMASK;
+ 100   2          while (BSP_DISP_CS == SPI_CS_ASSERT_LVL);
+ 101   2          TMR3CN0 |= TMR3CN0_TR3__BMASK;
+ 102   2      
+ 103   2      
+ 104   2        }
+ 105   1      }
+C51 COMPILER V9.53.0.0   MAIN                                                              04/14/2017 23:20:05 PAGE 3   
+
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    244    ----
+   CONSTANT SIZE    =     19    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     20    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+   EDATA SIZE       =   ----    ----
+   HDATA SIZE       =   ----    ----
+   XDATA CONST SIZE =   ----    ----
+   FAR CONST SIZE   =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

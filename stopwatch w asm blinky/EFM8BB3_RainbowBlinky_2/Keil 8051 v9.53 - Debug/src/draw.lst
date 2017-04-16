@@ -1,0 +1,132 @@
+C51 COMPILER V9.53.0.0   DRAW                                                              04/14/2017 22:37:03 PAGE 1   
+
+
+C51 COMPILER V9.53.0.0, COMPILATION OF MODULE DRAW
+OBJECT MODULE PLACED IN .\src\draw.OBJ
+COMPILER INVOKED BY: c:\SiliconLabs\SimplicityStudio\v4\developer\toolchains\keil_8051\9.53\BIN\C51.exe C:\Users\Richard
+                    -\SimplicityStudio\v4_workspace\EFM8BB3_RainbowBlinky_2\src\draw.c OMF2 SMALL DEBUG OBJECTEXTEND ROM(LARGE) WARNINGLEVEL(
+                    -2) FLOATFUZZY(3) OPTIMIZE(8,SPEED) DEFINE(DEBUG=1) INTVECTOR(0X0000) INTPROMOTE INCDIR(C:\Users\Richard\SimplicityStudio
+                    -\v4_workspace\EFM8BB3_RainbowBlinky_2\inc;C:\Users\Richard\SimplicityStudio\v4_workspace\EFM8BB3_RainbowBlinky_2\inc\con
+                    -fig;C:/SiliconLabs/SimplicityStudio/v4/developer/sdks/8051/v4.0.1//kits/common/drivers/efm8_memory_lcd/inc;C:/SiliconLab
+                    -s/SimplicityStudio/v4/developer/sdks/8051/v4.0.1//kits/common/drivers/efm8_memory_lcd/inc/graphics;C:/SiliconLabs/Simpli
+                    -cityStudio/v4/developer/sdks/8051/v4.0.1//kits/common/drivers/efm8_memory_lcd/inc/config;C:/SiliconLabs/SimplicityStudio
+                    -/v4/developer/sdks/8051/v4.0.1//kits/common/drivers/efm8_joystick;C:/SiliconLabs/SimplicityStudio/v4/developer/sdks/8051
+                    -/v4.0.1//kits/common/bsp;C:/SiliconLabs/SimplicityStudio/v4/developer/sdks/8051/v4.0.1//kits/EFM8BB3_SLSTK2022A/config;C
+                    -:/SiliconLabs/SimplicityStudio/v4/developer/sdks/8051/v4.0.1//kits/common/drivers/efm8_rgb_led;C:/SiliconLabs/Simplicity
+                    -Studio/v4/developer/sdks/8051/v4.0.1//Device/shared/si8051base;C:/SiliconLabs/SimplicityStudio/v4/developer/sdks/8051/v4
+                    -.0.1//Device/EFM8BB3/inc;C:/SiliconLabs/SimplicityStudio/v4/developer/sdks/8051/v4.0.1//Device/EFM8BB3/peripheral_driver
+                    -/inc) PRINT(.\src\draw.lst) COND PAGEWIDTH(120) PAGELENGTH(65) OBJECT(.\src\draw.OBJ)
+
+line level    source
+
+   1          /*
+   2           * draw.c
+   3           *
+   4           *  Created on: Apr 14, 2017
+   5           *      Author: Richard
+   6           */
+   7          
+   8          /**************************************************************************//**
+   9           * Copyright (c) 2015 by Silicon Laboratories Inc. All rights reserved.
+  10           *
+  11           * http://developer.silabs.com/legal/version/v11/Silicon_Labs_Software_License_Agreement.txt
+  12           *****************************************************************************/
+  13          /////////////////////////////////////////////////////////////////////////////
+  14          // draw.c
+  15          /////////////////////////////////////////////////////////////////////////////
+  16          
+  17          #include <string.h>
+  18          #include "bsp.h"
+  19          #include "draw.h"
+  20          #include "splash.h"
+  21          
+  22          //-----------------------------------------------------------------------------
+  23          // Variables
+  24          //-----------------------------------------------------------------------------
+  25          // Generic line buffer
+  26          SI_SEGMENT_VARIABLE(Line[DISP_BUF_SIZE], uint8_t, RENDER_LINE_SEG);
+  27          
+  28          
+  29          //-----------------------------------------------------------------------------
+  30          // RENDER_ClrLineSegment
+  31          //-----------------------------------------------------------------------------
+  32          //
+  33          // Clear the contents of a line segment buffer, setting its contents
+  34          // to the background color.
+  35          //
+  36          // line - a line buffer to clear (length: DISP_BUF_SIZE)
+  37          // x1 - the pixel x position to start writing, must be 8 bit alignment
+  38          // x2 - the pixel x position to end writing, must be divisible by 8
+  39          //-----------------------------------------------------------------------------
+  40          static void RENDER_ClrLineSegment(
+  41                          SI_VARIABLE_SEGMENT_POINTER(line, uint8_t, RENDER_LINE_SEG), uint8_t x1, uint8_t x2)
+  42          {
+  43   1              uint8_t i;
+  44   1          for (i = (x1 / 8); i < (x2 / 8); i++) {
+C51 COMPILER V9.53.0.0   DRAW                                                              04/14/2017 22:37:03 PAGE 2   
+
+  45   2              line[i] = 0;
+  46   2          }
+  47   1      }
+  48          
+  49          
+  50          //-----------------------------------------------------------------------------
+  51          // DrawSplashScreen() Routine
+  52          //-----------------------------------------------------------------------------
+  53          //
+  54          // Draw SiLabs splash screen.
+  55          //
+  56          //-----------------------------------------------------------------------------
+  57          /*void DrawSplashScreen(void)
+  58          {
+  59              uint8_t i;
+  60              for (i = 0; i < DISP_HEIGHT; i++) {
+  61                  RENDER_ClrLine(Line);
+  62                  RENDER_SpriteLine(Line, 0,  i, splash_bits, DISP_WIDTH);
+  63                  DISP_WriteLine(i, Line);
+  64              }
+  65          }
+  66          */
+  67          
+  68          //-----------------------------------------------------------------------------
+  69          // RenderText
+  70          //-----------------------------------------------------------------------------
+  71          //
+  72          // Draw a string on screen centralist.
+  73          //
+  74          //-----------------------------------------------------------------------------
+  75          void DrawScreenText(SI_VARIABLE_SEGMENT_POINTER(str, char, RENDER_STR_SEG), uint8_t y)
+  76          {
+  77   1          uint8_t i;
+  78   1          uint8_t len = RENDER_GetStrSize(str);
+  79   1      
+  80   1          /* Copy a line from text area into line buffer. */
+  81   1      //    for (i = 0; i < DISP_WIDTH / 8; i++)
+  82   1      //    {
+  83   1      //      Line[i] = splash_bits[16 * 100 + i];
+  84   1      //    }
+  85   1      
+  86   1          for (i = 0; i < FONT_HEIGHT; i++) {
+  87   2              RENDER_ClrLineSegment(Line, 0, 0);
+  88   2              RENDER_StrLine(Line, (DISP_WIDTH - len) / 2, i, str);
+  89   2              DISP_WriteLine(i + y, Line);
+  90   2          }
+  91   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    108    ----
+   CONSTANT SIZE    =   2048    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       6
+   IDATA SIZE       =     16    ----
+   BIT SIZE         =   ----    ----
+   EDATA SIZE       =   ----    ----
+   HDATA SIZE       =   ----    ----
+   XDATA CONST SIZE =   ----    ----
+   FAR CONST SIZE   =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
